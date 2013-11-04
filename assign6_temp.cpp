@@ -1,26 +1,24 @@
-/*
-
-EECS 366/466 COMPUTER GRAPHICS
-Template for Assignment 6-Local Illumination and Shading
-
-*/
+/* Wes Rupert - wesrupert@outlook.com (wkr3)  *
+ * Josh Braun - jxb532@case.edu (jxb532)      *
+ * Case Western Reserve University - EECS 366 *
+ * 11/04/2013 - Assignment 6                  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
-
 #include <string.h>
 #include <windows.h>
+//#include <GL/glut.h>
 #include "glut.h"
 #include <GL/glu.h>
 #include <GL/gl.h>
 #include "glprocs.h"
 
+using namespace std;
 
 #define PI 3.14159265359
 
-using namespace std;
 
 //Illimunation and shading related declerations
 char *shaderFileRead(char *fn);
@@ -47,7 +45,6 @@ double G = 1.0;
 double B = 1.0;
 
 void DisplayFunc(void) {
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//load projection and viewing transforms
@@ -100,16 +97,14 @@ void DisplayFunc(void) {
 	glutSwapBuffers();
 }
 
-void ReshapeFunc(int x,int y)
-{
+void ReshapeFunc(int x,int y) {
     glViewport(0,0,x,y);
     WindowWidth = x;
     WindowHeight = y;
 }
 
 
-void MouseFunc(int button,int state,int x,int y)
-{
+void MouseFunc(int button,int state,int x,int y) {
 	MouseX = x;
 	MouseY = y;
 
@@ -119,15 +114,12 @@ void MouseFunc(int button,int state,int x,int y)
 		MouseRight = !(bool) state;
 }
 
-void MotionFunc(int x, int y)
-{
-	if(MouseLeft)
-	{
+void MotionFunc(int x, int y) {
+	if(MouseLeft) {
         CameraTheta += 0.01*PI*(MouseX - x);
 		CameraPhi += 0.01*PI*(MouseY - y);
 	}
-	if(MouseRight)
-	{
+	if(MouseRight) {
         CameraRadius += 0.2*(MouseY-y);
 		if(CameraRadius <= 0)
 			CameraRadius = 0.2;
@@ -141,31 +133,26 @@ void MotionFunc(int x, int y)
 
 
 void setShaders() {
-
 	char *vs = NULL,*fs = NULL;
 
 	//create the empty shader objects and get their handles
 	vertex_shader = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
 	fragment_shader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-	
 
 	//read the shader files and store the strings in corresponding char. arrays.
 	vs = shaderFileRead("sampleshader.vert");
 	fs = shaderFileRead("sampleshader.frag");
 
+	//set the shader's source code by using the strings read from the shader files.
 	const char * vv = vs;
 	const char * ff = fs;
-
-	//set the shader's source code by using the strings read from the shader files.
 	glShaderSourceARB(vertex_shader, 1, &vv,NULL);
 	glShaderSourceARB(fragment_shader, 1, &ff,NULL);
-
 	free(vs);free(fs);
 
 	//Compile the shader objects
 	glCompileShaderARB(vertex_shader);
 	glCompileShaderARB(fragment_shader);
-
 
 	//create an empty program object to attach the shader objects
 	p = glCreateProgramObjectARB();
@@ -196,15 +183,12 @@ void setShaders() {
 
 	//Start to use the program object, which is the part of the current rendering state
 	glUseProgramObjectARB(p);
-
 }
 
 
 //Motion and camera controls
-void KeyboardFunc(unsigned char key, int x, int y)
-{
-    switch(key)
-	{
+void KeyboardFunc(unsigned char key, int x, int y) {
+    switch(key) {
 	case 'A':
 	case 'a':
 		ShowAxes = !ShowAxes;
@@ -215,41 +199,31 @@ void KeyboardFunc(unsigned char key, int x, int y)
 		break;
 	case 'w':
 	case 'W':
-		if (illimunationMode == 0)
-		{
+		if (illimunationMode == 0) {
 			illimunationMode = 1;
-		}
-		else
-		{
+		} else {
 			illimunationMode = 0;
 		}
 		break;
 	case 'e':
 	case 'E':
-		if (shadingMode == 0)
-		{
+		if (shadingMode == 0) {
 			shadingMode =1;
-		}
-		else
-		{
+		} else {
 			shadingMode =0;
 		}
 		break;
 	case 'd':
 	case 'D':
-		if (lightSource == 0)
-		{
+		if (lightSource == 0) {
 			lightSource =1;
-		}
-		else
-		{
+		} else {
 			lightSource =0;
 		}
 		break;
 	case 'f':
 	case 'F':
-		if (lightSource == 1)
-		{
+		if (lightSource == 1) {
 			//change color of the secondary light source at each key press, 
 			//light color cycling through pure red, green, blue, and white.
 		}
@@ -262,23 +236,18 @@ void KeyboardFunc(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
-int main(int argc, char **argv) 
-{			  
-
+int main(int argc, char **argv)  {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100,100);
 	glutInitWindowSize(320,320);
 	glutCreateWindow("Assignment 6");
 
-
-
 	glutDisplayFunc(DisplayFunc);
 	glutReshapeFunc(ReshapeFunc);
 	glutMouseFunc(MouseFunc);
     glutMotionFunc(MotionFunc);
     glutKeyboardFunc(KeyboardFunc);
-
 
 	const GLubyte *temp;
 	temp=glGetString(GL_VERSION);
@@ -288,27 +257,19 @@ int main(int argc, char **argv)
 	temp=glGetString(GL_EXTENSIONS);
 	printf("%s\n",temp);
 	
-
 	setShaders();
-
 	glutMainLoop();
-
 	return 0;
 }
 
 
 //Read the shader files, given as parameter.
 char *shaderFileRead(char *fn) {
-
-
 	FILE *fp = fopen(fn,"r");
-	if(!fp)
-	{
+	if(!fp) {
 		cout<< "Failed to load " << fn << endl;
 		return " ";
-	}
-	else
-	{
+	} else {
 		cout << "Successfully loaded " << fn << endl;
 	}
 	
@@ -316,14 +277,11 @@ char *shaderFileRead(char *fn) {
 
 	int count=0;
 
-	if (fp != NULL) 
-	{
+	if (fp != NULL) {
 		fseek(fp, 0, SEEK_END);
 		count = ftell(fp);
 		rewind(fp);
-
-		if (count > 0) 
-		{
+		if (count > 0) {
 			content = (char *)malloc(sizeof(char) * (count+1));
 			count = fread(content,sizeof(char),count,fp);
 			content[count] = '\0';
