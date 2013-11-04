@@ -18,7 +18,10 @@
 using namespace std;
 
 #define PI 3.14159265359
-
+#define RED 0
+#define GREEN 1
+#define BLUE 2
+#define WHITE 3
 
 //Illimunation and shading related declerations
 char *shaderFileRead(char *fn);
@@ -40,9 +43,10 @@ int MouseY = 0;
 bool MouseLeft = false;
 bool MouseRight = false;
 
-double R = 1.0;
-double G = 1.0;
-double B = 1.0;
+int currentColor = RED;
+float R = 1.0;
+float G = 0.0;
+float B = 0.0;
 
 void DisplayFunc(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -52,36 +56,33 @@ void DisplayFunc(void) {
 	glLoadIdentity();
 
 
-	 GLfloat color[ ] = {R, G, B, 1.0};
-        GLfloat ambient[ ] = {0.0 , 0.0 , 0.0, 1.0};
-        GLfloat light0Position [ ] = {7.0, 7.0, 7.0};
-        //GLfloat light1PosType [ ] = {CameraRadius*cos(CameraTheta)*sin(CameraPhi),
-        //                  CameraRadius*sin(CameraTheta)*sin(CameraPhi),
-        //                  CameraRadius*cos(CameraPhi)};
-        //GLfloat light1Direct [] = {CameraRadius*cos(CameraTheta)*sin(CameraPhi),
-        //                  CameraRadius*sin(CameraTheta)*sin(CameraPhi),
-        //                  CameraRadius*cos(CameraPhi)};
-        glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
-       // glLightfv(GL_LIGHT1, GL_POSITION, light1PosType);
-        //glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1Direct);
-        //glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 30.0);
-        //glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.5);
-        glLightfv(GL_LIGHT0, GL_COLOR, color);
-        glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+	GLfloat light0Color[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat light1Color[] = {R, G, B, 1.0};
 
+	GLfloat ambient[] = {0.0 , 0.0 , 0.0, 1.0};
+
+	GLfloat light0Position [] = {CameraRadius*cos(CameraTheta)*sin(CameraPhi),
+                          CameraRadius*sin(CameraTheta)*sin(CameraPhi),
+                          CameraRadius*cos(CameraPhi)};
+	GLfloat light1Position [] = {7.0, 7.0, 7.0};
+
+	glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light0Color);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light0Color);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+
+	glLightfv(GL_LIGHT0, GL_POSITION, light1Position);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, light1Color);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, light1Color);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
+
+	if (lightSource == 0) {
 		glEnable(GL_LIGHT0);
-
-        //if(Light)
-        //{
-        //        glEnable (GL_LIGHT3);
-        //    glDisable(GL_LIGHT1);
-        //}
-        //if(!Light)
-        //{
-        //                glEnable(GL_LIGHT1);
-        //            glDisable(GL_LIGHT3);
-        //}
-
+		glDisable(GL_LIGHT1);
+	} else {
+		glEnable(GL_LIGHT1);
+		glDisable(GL_LIGHT0);
+	}
         
 	gluPerspective(60,(GLdouble) WindowWidth/WindowHeight,0.01,10000);
 
@@ -226,6 +227,27 @@ void KeyboardFunc(unsigned char key, int x, int y) {
 		if (lightSource == 1) {
 			//change color of the secondary light source at each key press, 
 			//light color cycling through pure red, green, blue, and white.
+			if (currentColor == RED ) {
+				R = 0.0;
+				G = 1.0;
+				B = 0.0;
+				currentColor = GREEN;
+			} else if (currentColor == GREEN) {
+				R = 0.0;
+				G = 0.0;
+				B = 1.0;
+				currentColor = BLUE;
+			} else if (currentColor == BLUE) {
+				R = 1.0;
+				G = 1.0;
+				B = 1.0;
+				currentColor = WHITE;
+			} else if (currentColor == WHITE) {
+				R = 1.0;
+				G = 0.0;
+				B = 0.0;
+				currentColor = RED;
+			}
 		}
 		break;
 
@@ -257,7 +279,7 @@ int main(int argc, char **argv)  {
 	temp=glGetString(GL_EXTENSIONS);
 	printf("%s\n",temp);
 	
-	setShaders();
+	//setShaders();
 	glutMainLoop();
 	return 0;
 }
