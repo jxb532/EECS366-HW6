@@ -11,8 +11,8 @@ Template for Assignment 6-Local Illumination and Shading
 #include <math.h>
 
 #include <string.h>
-#include <GL/glut.h>
 #include <windows.h>
+#include "glut.h"
 #include <GL/glu.h>
 #include <GL/gl.h>
 #include "glprocs.h"
@@ -29,13 +29,10 @@ int illimunationMode = 0;
 int shadingMode = 0;
 int lightSource = 0;
 
-
 //Projection, camera contral related declerations
 int WindowWidth,WindowHeight;
 bool LookAtObject = false;
 bool ShowAxes = true;
-
-
 
 float CameraRadius = 10;
 float CameraTheta = PI / 2;
@@ -45,7 +42,9 @@ int MouseY = 0;
 bool MouseLeft = false;
 bool MouseRight = false;
 
-
+double R = 1.0;
+double G = 1.0;
+double B = 1.0;
 
 void DisplayFunc(void) {
 
@@ -54,6 +53,37 @@ void DisplayFunc(void) {
 	//load projection and viewing transforms
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+
+
+	 GLfloat color[ ] = {R, G, B, 1.0};
+        GLfloat ambient[ ] = {0.0 , 0.0 , 0.0, 1.0};
+        GLfloat light0Position [ ] = {7.0, 7.0, 7.0};
+        //GLfloat light1PosType [ ] = {CameraRadius*cos(CameraTheta)*sin(CameraPhi),
+        //                  CameraRadius*sin(CameraTheta)*sin(CameraPhi),
+        //                  CameraRadius*cos(CameraPhi)};
+        //GLfloat light1Direct [] = {CameraRadius*cos(CameraTheta)*sin(CameraPhi),
+        //                  CameraRadius*sin(CameraTheta)*sin(CameraPhi),
+        //                  CameraRadius*cos(CameraPhi)};
+        glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
+       // glLightfv(GL_LIGHT1, GL_POSITION, light1PosType);
+        //glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1Direct);
+        //glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 30.0);
+        //glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 2.5);
+        glLightfv(GL_LIGHT0, GL_COLOR, color);
+        glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+
+		glEnable(GL_LIGHT0);
+
+        //if(Light)
+        //{
+        //        glEnable (GL_LIGHT3);
+        //    glDisable(GL_LIGHT1);
+        //}
+        //if(!Light)
+        //{
+        //                glEnable(GL_LIGHT1);
+        //            glDisable(GL_LIGHT3);
+        //}
 
         
 	gluPerspective(60,(GLdouble) WindowWidth/WindowHeight,0.01,10000);
@@ -250,7 +280,13 @@ int main(int argc, char **argv)
     glutKeyboardFunc(KeyboardFunc);
 
 
-
+	const GLubyte *temp;
+	temp=glGetString(GL_VERSION);
+	printf("%s\n",temp);
+	temp=glGetString(GL_VENDOR);
+	printf("%s\n",temp);
+	temp=glGetString(GL_EXTENSIONS);
+	printf("%s\n",temp);
 	
 
 	setShaders();
