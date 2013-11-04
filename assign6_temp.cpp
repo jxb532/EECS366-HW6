@@ -55,6 +55,7 @@ void DisplayFunc(void) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
+	glEnable(GL_LIGHTING);
 
 	GLfloat light0Color[] = {1.0, 1.0, 1.0, 1.0};
 	GLfloat light1Color[] = {R, G, B, 1.0};
