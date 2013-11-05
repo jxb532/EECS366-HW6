@@ -81,9 +81,10 @@ void DisplayFunc(void) {
 	GLfloat ambient[] = {0.0 , 0.0 , 0.0, 1.0};
 
 	GLfloat light0Position [] = {CameraRadius*cos(CameraTheta)*sin(CameraPhi),
-                          CameraRadius*sin(CameraTheta)*sin(CameraPhi),
-                          CameraRadius*cos(CameraPhi)};
-	GLfloat light1Position [] = {7.0, 7.0, 7.0};
+						CameraRadius*sin(CameraTheta)*sin(CameraPhi),
+						CameraRadius*cos(CameraPhi),
+						1.0};
+	GLfloat light1Position [] = {7.0, 7.0, 7.0, 1.0};
 
 	glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light0Color);
