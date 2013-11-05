@@ -3,17 +3,21 @@
  * Case Western Reserve University - EECS 366 *
  * 11/04/2013 - Assignment 6                  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <math.h>
-#include <string.h>
-#include <windows.h>
 //#include <GL/glut.h>
 #include "glut.h"
 #include <GL/glu.h>
 #include <GL/gl.h>
 #include "glprocs.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstring>
+#include <vector>
+#include <math.h>
+#include <string.h>
+#include <windows.h>
 
 using namespace std;
 
@@ -30,11 +34,24 @@ int illimunationMode = 0;
 int shadingMode = 0;
 int lightSource = 0;
 
+// Shader model declarations
+void materialPropertesFileRead(char *fn);
+GLfloat P_RGB_ambient[3];
+GLfloat P_RGB_diffuse[3];
+GLfloat P_RGB_specular[3];
+GLfloat P_exp_specular;
+GLfloat C_RGB_ambient[3];
+GLfloat C_d;
+GLfloat C_RGB_Rd[3];
+GLfloat C_s;
+GLfloat C_RGB_Fs[3];
+GLfloat C_m[2];
+GLfloat C_w[2];
+
 //Projection, camera contral related declerations
 int WindowWidth,WindowHeight;
 bool LookAtObject = false;
 bool ShowAxes = true;
-
 float CameraRadius = 10;
 float CameraTheta = PI / 2;
 float CameraPhi = PI / 2;
@@ -43,6 +60,7 @@ int MouseY = 0;
 bool MouseLeft = false;
 bool MouseRight = false;
 
+// Color related declarations
 int currentColor = RED;
 float R = 1.0;
 float G = 0.0;
@@ -105,7 +123,6 @@ void ReshapeFunc(int x,int y) {
     WindowHeight = y;
 }
 
-
 void MouseFunc(int button,int state,int x,int y) {
 	MouseX = x;
 	MouseY = y;
@@ -132,7 +149,6 @@ void MotionFunc(int x, int y) {
 
 	glutPostRedisplay();
 }
-
 
 void setShaders() {
 	char *vs = NULL,*fs = NULL;
@@ -187,8 +203,6 @@ void setShaders() {
 	glUseProgramObjectARB(p);
 }
 
-
-//Motion and camera controls
 void KeyboardFunc(unsigned char key, int x, int y) {
     switch(key) {
 	case 'A':
@@ -285,7 +299,6 @@ int main(int argc, char **argv)  {
 	return 0;
 }
 
-
 //Read the shader files, given as parameter.
 char *shaderFileRead(char *fn) {
 	FILE *fp = fopen(fn,"r");
@@ -313,3 +326,44 @@ char *shaderFileRead(char *fn) {
 	}
 	return content;
 }
+
+void materialPropertesFileRead(char *fn) {
+	ifstream fp(fn, ios::in);
+	if(!fp || !fp.is_open()) {
+		cout<< "Failed to load " << fn << endl;
+		return;
+	}
+
+
+	char type;
+	while (!fp.eof) {
+		fp >> type;
+		if (type == 'P') {
+			fp >> P_RGB_ambient[0] >> P_RGB_ambient[1] >> P_RGB_ambient[2] >>
+				  P_RGB_diffuse[0] >> P_RGB_diffuse[1] >> P_RGB_diffuse[2] >>
+				  P_RGB_specular[0] >> P_RGB_specular[1] >> P_RGB_specular[2] >>
+				  P_exp_specular;
+		} else if (type == 'C') {
+			fp >> C_RGB_ambient[0] >> C_RGB_ambient[1] >> C_RGB_ambient[2] >>
+				C_d >> C_RGB_Rd[0] >> C_RGB_Rd[1] >> C_RGB_Rd[2] >>
+				C_s >> C_RGB_Fs[0] >> C_RGB_Fs[1] >> C_RGB_Fs[2] >>
+				C_m[0] >> C_w[0] >> C_m[1] >> C_w[1];
+		}
+	}
+
+	fp.close();
+}
+
+// TODO: DELETE ASDFKLAJGADFKLGJDLFKGJ
+void materialPropertesFileRead(char *fn);
+GLfloat P_RGB_ambient[3];
+GLfloat P_RGB_diffuse[3];
+GLfloat P_RGB_specular[3];
+GLfloat P_exp_specular;
+GLfloat C_RGB_ambient[3];
+GLfloat C_d;
+GLfloat C_RGB_Rd[3];
+GLfloat C_s;
+GLfloat C_RGB_Fs[3];
+GLfloat C_m[2];
+GLfloat C_w[2];
