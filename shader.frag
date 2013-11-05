@@ -6,16 +6,14 @@ uniform int flag;
 //uniform vec4 fvSpecular; //gl_FrontLightProduct[0].specular
 //uniform vec4 fvDiffuse; //gl_FrontLightProduct[0].diffuse
 
-// used for both
-uniform vec3 ambientMat;
-
 // used for phong
+uniform vec3 pAmbientMat;
 uniform vec3 specularMat;
 uniform vec3 diffuseMat;
 uniform float specularPower;
 
 // used for cook-torrence
-uniform vec3 Rd;
+uniform vec3 cAmbientMat;
 uniform vec3 F0;
 uniform float d;
 uniform float s;
@@ -70,7 +68,7 @@ void main(void)
       vec3 H = normalize(L + V);
       float NDotH = dot(N, H);
       
-      vec3 Ia = ambientMat * gl_FrontLightProduct[0].ambient.xyz;
+      vec3 Ia = pAmbientMat * gl_FrontLightProduct[0].ambient.xyz;
       vec3 Id = diffuseMat * gl_FrontLightProduct[0].diffuse.xyz * NDotL;
       Id = clamp(Id, 0.0, 1.0);
       vec3 Is = specularMat * gl_FrontLightProduct[0].specular.xyz * pow(RDotV, specularPower);
