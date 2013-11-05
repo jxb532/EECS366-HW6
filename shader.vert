@@ -1,6 +1,7 @@
 #define PI 3.14159265358979323846
 
 uniform int flag;
+uniform int light;
 
 // used for phong
 uniform vec3 pAmbientMat;
@@ -26,19 +27,10 @@ varying vec3 N;
 varying vec4 color;
    
 void main( void )
-{
-   //gl_Position = ftransform();
-    
-   //vec4 fvObjectPosition = gl_ModelViewMatrix * gl_Vertex;
-   
-   //V = normalize(fvEyePosition - fvObjectPosition.xyz);
-   //L = normalize(fvLightPosition - fvObjectPosition.xyz);
-   //L = normalize(gl_LightSource[0].position.xyz - fvObjectPosition.xyz);
-   //N = normalize(gl_NormalMatrix * gl_Normal);
-   
+{  
    vec3 v = vec3(gl_ModelViewMatrix * gl_Vertex);       
    N = normalize(gl_NormalMatrix * gl_Normal);
-   L = normalize(gl_LightSource[0].position.xyz - v);
+   L = normalize(gl_LightSource[light].position.xyz - v);
    V = normalize(-v);
    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
    
@@ -66,7 +58,7 @@ void main( void )
       
       float dwi = 0.0001;
       
-      vec4 ret = vec4(gl_FrontLightProduct[0].ambient.xyz * Ra + gl_FrontLightProduct[0].diffuse.xyz * NdotL /* * dwi*/ * (s * Rs + d * Rd), 1.0);
+      vec4 ret = vec4(gl_FrontLightProduct[light].ambient.xyz * Ra + gl_FrontLightProduct[light].diffuse.xyz * NdotL /* * dwi*/ * (s * Rs + d * Rd), 1.0);
       color = ret;
       
    // Phong lighting with Gourard interpolation
@@ -80,10 +72,10 @@ void main( void )
       vec3 H = normalize(L + V);
       float NDotH = dot(N, H);
       
-      vec3 Ia = pAmbientMat * gl_FrontLightProduct[0].ambient.xyz;
-      vec3 Id = diffuseMat * gl_FrontLightProduct[0].diffuse.xyz * NDotL;
+      vec3 Ia = pAmbientMat * gl_FrontLightProduct[light].ambient.xyz;
+      vec3 Id = diffuseMat * gl_FrontLightProduct[light].diffuse.xyz * NDotL;
       Id = clamp(Id, 0.0, 1.0);
-      vec3 Is = specularMat * gl_FrontLightProduct[0].specular.xyz * pow(RDotV, specularPower);
+      vec3 Is = specularMat * gl_FrontLightProduct[light].specular.xyz * pow(RDotV, specularPower);
       color = vec4((Ia + Id + Is), 1.0);
    }
 }

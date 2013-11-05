@@ -1,10 +1,7 @@
 #define PI 3.14159265358979323846
 
 uniform int flag;
-
-//uniform vec4 fvAmbient; //gl_FrontLightProduct[0].ambient
-//uniform vec4 fvSpecular; //gl_FrontLightProduct[0].specular
-//uniform vec4 fvDiffuse; //gl_FrontLightProduct[0].diffuse
+uniform int light;
 
 // used for phong
 uniform vec3 pAmbientMat;
@@ -14,6 +11,7 @@ uniform float specularPower;
 
 // used for cook-torrence
 uniform vec3 cAmbientMat;
+uniform vec3 Rd;
 uniform vec3 F0;
 uniform float d;
 uniform float s;
@@ -54,7 +52,7 @@ void main(void)
       
       float dwi = 0.0001;
       
-      vec4 ret = vec4(gl_FrontLightProduct[0].ambient.xyz * Ra + gl_FrontLightProduct[0].diffuse.xyz * NdotL /* * dwi*/ * (s * Rs + d * Rd), 1.0);
+      vec4 ret = vec4(gl_FrontLightProduct[light].ambient.xyz * Ra + gl_FrontLightProduct[light].diffuse.xyz * NdotL /* * dwi*/ * (s * Rs + d * Rd), 1.0);
       gl_FragColor = ret;
       
    // Phong lighting with phong shading
@@ -68,10 +66,10 @@ void main(void)
       vec3 H = normalize(L + V);
       float NDotH = dot(N, H);
       
-      vec3 Ia = pAmbientMat * gl_FrontLightProduct[0].ambient.xyz;
-      vec3 Id = diffuseMat * gl_FrontLightProduct[0].diffuse.xyz * NDotL;
+      vec3 Ia = pAmbientMat * gl_FrontLightProduct[light].ambient.xyz;
+      vec3 Id = diffuseMat * gl_FrontLightProduct[light].diffuse.xyz * NDotL;
       Id = clamp(Id, 0.0, 1.0);
-      vec3 Is = specularMat * gl_FrontLightProduct[0].specular.xyz * pow(RDotV, specularPower);
+      vec3 Is = specularMat * gl_FrontLightProduct[light].specular.xyz * pow(RDotV, specularPower);
       gl_FragColor = vec4((Ia + Id + Is), 1.0);
       
    // we are using Gourard shading, just use the color given by the vertex shader
