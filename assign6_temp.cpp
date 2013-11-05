@@ -65,6 +65,8 @@ float R = 1.0;
 float G = 0.0;
 float B = 0.0;
 
+int flag = 0;
+
 void DisplayFunc(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
