@@ -13,7 +13,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <sstring>
 #include <vector>
 #include <math.h>
 #include <string.h>
@@ -36,17 +35,17 @@ int lightSource = 0;
 
 // Shader model declarations
 void materialPropertesFileRead(char *fn);
-GLfloat P_RGB_ambient[3];
-GLfloat P_RGB_diffuse[3];
-GLfloat P_RGB_specular[3];
-GLfloat P_exp_specular;
-GLfloat C_RGB_ambient[3];
-GLfloat C_d;
-GLfloat C_RGB_Rd[3];
-GLfloat C_s;
-GLfloat C_RGB_Fs[3];
-GLfloat C_m[2];
-GLfloat C_w[2];
+float P_RGB_ambient[3];
+float P_RGB_diffuse[3];
+float P_RGB_specular[3];
+float P_exp_specular;
+float C_RGB_ambient[3];
+float C_d;
+float C_RGB_Rd[3];
+float C_s;
+float C_RGB_Fs[3];
+float C_m[2];
+float C_w[2];
 
 //Projection, camera contral related declerations
 int WindowWidth,WindowHeight;
@@ -65,6 +64,8 @@ int currentColor = RED;
 float R = 1.0;
 float G = 0.0;
 float B = 0.0;
+
+int flag = 0;
 
 void DisplayFunc(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -202,6 +203,36 @@ void setShaders() {
 
 	//Start to use the program object, which is the part of the current rendering state
 	glUseProgramObjectARB(p);
+
+	GLint loc1, loc2, loc3, loc4, loc5, loc6, loc7, loc8, loc9, loc10, loc11, loc12, loc13, loc14;
+	loc1 = glGetUniformLocationARB(p, "flag");
+	glUniform1iARB(loc1, flag);
+	loc2 = glGetUniformLocationARB(p, "pAmbientMat");
+	glUniform3fvARB(loc2, 1, P_RGB_ambient);
+	loc3 = glGetUniformLocationARB(p, "specularMat");
+	glUniform3fvARB(loc3, 1, P_RGB_specular);
+	loc4 = glGetUniformLocationARB(p, "diffuseMat");
+	glUniform3fvARB(loc4, 1, P_RGB_diffuse);
+	loc5 = glGetUniformLocationARB(p, "specularPower");
+	glUniform1fARB(loc5, P_exp_specular);
+	loc6 = glGetUniformLocationARB(p, "Rd");
+	glUniform3fvARB(loc6, 1, C_RGB_Rd);
+	loc7 = glGetUniformLocationARB(p, "F0");
+	glUniform3fvARB(loc7, 1, C_RGB_Fs);
+	loc8 = glGetUniformLocationARB(p, "d");
+	glUniform1fARB(loc8, C_d);
+	loc9 = glGetUniformLocationARB(p, "s");
+	glUniform1fARB(loc9, C_s);
+	loc10 = glGetUniformLocationARB(p, "m1");
+	glUniform1fARB(loc10, C_m[0]);
+	loc11 = glGetUniformLocationARB(p, "w1");
+	glUniform1fARB(loc11, C_w[0]);
+	loc12 = glGetUniformLocationARB(p, "m2");
+	glUniform1fARB(loc12, C_m[1]);
+	loc13 = glGetUniformLocationARB(p, "w2");
+	glUniform1fARB(loc13, C_w[1]);
+	loc14 = glGetUniformLocationARB(p, "cAmbientMat");
+	glUniform3fvARB(loc2, 1, C_RGB_ambient);
 }
 
 void KeyboardFunc(unsigned char key, int x, int y) {
@@ -295,6 +326,8 @@ int main(int argc, char **argv)  {
 	temp=glGetString(GL_EXTENSIONS);
 	printf("%s\n",temp);
 	
+	materialPropertesFileRead("material.dat");
+
 	//setShaders();
 	glutMainLoop();
 	return 0;
@@ -354,17 +387,3 @@ void materialPropertesFileRead(char *fn) {
 
 	fp.close();
 }
-
-// TODO: DELETE ASDFKLAJGADFKLGJDLFKGJ
-void materialPropertesFileRead(char *fn);
-GLfloat P_RGB_ambient[3];
-GLfloat P_RGB_diffuse[3];
-GLfloat P_RGB_specular[3];
-GLfloat P_exp_specular;
-GLfloat C_RGB_ambient[3];
-GLfloat C_d;
-GLfloat C_RGB_Rd[3];
-GLfloat C_s;
-GLfloat C_RGB_Fs[3];
-GLfloat C_m[2];
-GLfloat C_w[2];
