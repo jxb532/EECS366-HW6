@@ -204,7 +204,9 @@ void setShaders() {
 	//Start to use the program object, which is the part of the current rendering state
 	glUseProgramObjectARB(p);
 
-	GLint loc1, loc2, loc3, loc4, loc5, loc6, loc7, loc8, loc9, loc10, loc11, loc12, loc13, loc14;
+	GLint loc0, loc1, loc2, loc3, loc4, loc5, loc6, loc7, loc8, loc9, loc10, loc11, loc12, loc13, loc14;
+	loc0 = glGetUniformLocationARB(p, "light");
+	glUniform1iARB(loc0, lightSource);
 	loc1 = glGetUniformLocationARB(p, "flag");
 	glUniform1iARB(loc1, 2 * shadingMode + illimunationMode);
 	loc2 = glGetUniformLocationARB(p, "pAmbientMat");
@@ -257,7 +259,6 @@ void KeyboardFunc(unsigned char key, int x, int y) {
 		}
 		loc = glGetUniformLocationARB(p, "flag");
 		glUniform1iARB(loc, 2 * shadingMode + illimunationMode);
-		glutPostRedisplay();
 		break;
 	case 'e':
 	case 'E':
@@ -268,7 +269,6 @@ void KeyboardFunc(unsigned char key, int x, int y) {
 		}
 		loc = glGetUniformLocationARB(p, "flag");
 		glUniform1iARB(loc, 2 * shadingMode + illimunationMode);
-		glutPostRedisplay();
 		break;
 	case 'd':
 	case 'D':
@@ -277,6 +277,8 @@ void KeyboardFunc(unsigned char key, int x, int y) {
 		} else {
 			lightSource =0;
 		}
+		loc = glGetUniformLocationARB(p, "light");
+		glUniform1iARB(loc, lightSource);
 		break;
 	case 'f':
 	case 'F':
